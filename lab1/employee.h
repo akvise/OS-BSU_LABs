@@ -1,3 +1,6 @@
+#include <cstring>
+#include <iomanip>
+
 class employee{
 public:
     int num;
