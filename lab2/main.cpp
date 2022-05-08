@@ -35,8 +35,8 @@ UINT WINAPI min_max(void* p){
     args->maxEl = max_;
     args->minEl = min_;
 
-    cout << arr[max_] << endl;
-    cout << arr[min_] << endl;
+    cout << "Max element: " << arr[max_] << endl;
+    cout << "Min element: " << arr[min_] << endl;
     return 0;
 }
 
@@ -55,6 +55,7 @@ UINT WINAPI average(void* p){
 }
 
 int main() {
+    std::cout << "Input size of array: ";
     int n;
     std::cin >> n;
 
@@ -83,6 +84,7 @@ int main() {
     array->arr[array->minEl] = array->avg;
     array->arr[array->maxEl] = array->avg;
 
+    cout << "\nChanged array: " << endl;
     outputArray(*array, n);
     return 0;
 }
