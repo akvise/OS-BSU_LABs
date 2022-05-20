@@ -10,7 +10,8 @@ std::vector<HANDLE> events;
 
 int main() {
     std::cout << "Input size of array: ";
-    int n; std::cin >> n;
+    int n;
+    std::cin >> n;
     int *arr = new int[n];
     for(int i = 0; i < n; i++) {
         arr[i] = 0;
@@ -42,9 +43,48 @@ int main() {
     }
     std::cout<<threadCount<<" are ready to start.\n";
 
+
+    InitializeCriticalSection(&critical_selection);
+    PulseEvent(eventHandle);
+    int terminatedCount = 0;
+    while(terminatedCount != threadCount) {
+        WaitForMultipleObjects(threadCount, &events[0], TRUE, INFINITE);
+
+        print(arr, n);
+
+        std::cout << "Which one is to terminate?\n";
+        int k; std::cin >> k;
+        if(k <= 0 || k > threadCount || terminated[k - 1]){
+            std::cout << "Try again.\n";
+            continue;
+        }
+        terminated[k-1] = true;
+        SetEvent(argsVec[k - 1]->actions[1]);
+        WaitForSingleObject(threads[k-1], INFINITE);
+        terminatedCount++;
+
+        print(arr, n);
+
+        for(int i = 0; i < threadCount; ++i){
+            if(terminated[i])
+                continue;
+            ResetEvent(events[i]);
+            SetEvent(argsVec[i]->actions[0]);
+        }
+    }
+    DeleteCriticalSection(&critical_selection);
+    delete[] arr;
     return 0;
 }
 
+
+void print(int* arr, int n){
+    EnterCriticalSection(&critical_selection);
+    for(int i = 0; i < n; i++){
+        std::cout << arr[i] << " ";
+    }
+    std::cout << '\n';
+}
 
 UINT WINAPI marker(void *p){
     Args* args = static_cast<Args*>(p);
