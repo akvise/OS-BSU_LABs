@@ -3,6 +3,9 @@
 
 #include <windows.h>
 
+void print(int* arr, int n);
+UINT WINAPI marker(void *p);
+
 struct Args{
     int* arr;
     int n;
